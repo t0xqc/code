@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="loveApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Me?</title>
+    <style>
+        /* Background love theme */
+        body {
+            background: url('https://cdn.pixabay.com/photo/2017/01/20/00/30/maldives-1993704_960_720.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Additional CSS styles */
+        .love-theme {
+            color: #ff007f;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 400px; /* Adjust container width */
+            text-align: center;
+            animation: fadeIn 1s ease; /* Fade-in animation */
+            transition: all 0.3s ease; /* Smooth transition for container */
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .button-yes,
+        .button-no,
+        .button-submit,
+        .button-continue,
+        .rethink-button {
+            background-color: #ff007f;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+            display: inline-block;
+            width: 200px; /* Adjust button width */
+            text-align: center; /* Center button text */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button-yes::before,
+        .button-no::before,
+        .button-submit::before,
+        .button-continue::before,
+        .rethink-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(#fff 10%, transparent 11%);
+            background-size: 100px 100px;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .button-yes:hover::before,
+        .button-no:hover::before,
+        .button-submit:hover::before,
+        .button-continue:hover::before,
+        .rethink-button:hover::before {
+            opacity: 1;
+        }
+
+        .button-yes span,
+        .button-no span,
+        .button-submit span,
+        .button-continue span,
+        .rethink-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .comment-area {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comment-area label {
+            display: block;
+            font-size: 20px;
+            color: #ff007f;
+            margin-bottom: 10px;
+        }
+
+        .comment-area textarea {
+            width: calc(100% - 30px); /* Adjust textarea width */
+            padding: 15px;
+            border: 2px solid #ff007f; /* Add border for the text area */
+            border-radius: 15px;
+            resize: vertical;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #555;
+            min-height: 150px; /* Make the text area taller */
+            box-sizing: border-box;
+        }
+
+        .no-message {
+            text-align: center;
+        }
+
+        /* Additional Styles */
+        .options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .option {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .love-image {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+            animation: fadeIn 3s ease; /* Fade-in animation for the image */
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Transparency effect */
+        #indexPage {
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+        }
+
+        /* Button hover effect */
+        .button-yes:hover,
+        .button-no:hover,
+        .button-submit:hover,
+        .button-continue:hover,
+        .rethink-button:hover {
+            transform: scale(1.1); /* Increase size on hover */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+        }
+
+        /* Text shadow effect */
+        #indexPage h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Popup message */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 9999;
+        }
+
+        .popup p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .love-poem {
+            font-style: italic;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .popup-close {
+            background-color: #ff007f;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .popup-close:hover {
+            background-color: #d6006b;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-controller="LoveController">
+
+    <!-- Index Page -->
+    <div class="container" id="indexPage" ng-show="showIndexPage">
+        <h1 class="love-theme">Do You Love Me?</h1>
+        <div class="options">
+            <div class="option">
+                <button class="button-yes" ng-click="chooseYes()"><span>Yes</span></button>
+            </div>
+            <div class="option">
+                <button class="button-no" ng-click="chooseNo()"><span>No</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yes Page -->
+    <div class="container" id="yesPage" ng-show="showYesPage">
+        <h1 class="love-theme">Thank you, Oreo! I knew it.</h1>
+        <p class="love-message">Either way, you are never allowed to leave me.</p>
+        <button class="button-continue love-theme" ng-click="showMarriagePopup()"><span>Continue</span></button>
+    </div>
+
+    <!-- No Page -->
+    <div class="container" id="noPage" ng-show="showNoPage">
+        <h1 class="love-theme">What the fuck??</h1>
+        <div class="comment-area">
+            <label for="comment" class="love-theme">Please tell us why you said no...</label>
+            <textarea id="comment" ng-model="yourFuckingExcuse" placeholder="Tell us..." rows="10"></textarea>
+        </div>
+        <div class="no-message">
+            <button class="button-submit love-theme" ng-disabled="!yourFuckingExcuse" ng-click="submit()"><span>Submit</span></button>
+            <br>
+            <button class="rethink-button love-theme" ng-click="rethink()"><span>Rethink</span></button>
+        </div>
+    </div>
+
+    <!-- Marriage Page -->
+    <div class="container marriage-page" ng-show="showMarriagePage">
+        <h1 class="love-theme">We Will End Up Married, Don't Worry</h1>
+        <button class="popup-close" ng-click="closePopup()"><span>Close</span></button>
+    </div>
+
+    <!-- Love Poem Popup -->
+    <div class="popup" ng-show="showPopup">
+        <p class="love-poem">Roses are red, violets are blue,<br>
+            Sugar is sweet, and so are you.<br>
+            Love is pure, and love is true,<br>
+            In your arms, I always find my cue.</p>
+        <button class="popup-close" ng-click="closePopup()"><span>Close</span></button>
+    </div>
+
+    <script>
+        angular.module('loveApp', [])
+            .controller('LoveController', function ($scope, $location) {
+                $scope.showIndexPage = true;
+                $scope.showYesPage = false;
+                $scope.showNoPage = false;
+                $scope.showMarriagePage = false;
+                $scope.showPopup = false;
+                $scope.yourFuckingExcuse = "";
+
+                $scope.chooseYes = function () {
+                    $scope.showIndexPage = false;
+                    $scope.showYesPage = true;
+                };
+
+                $scope.chooseNo = function () {
+                    $scope.showIndexPage = false;
+                    $scope.showNoPage = true;
+                };
+
+                $scope.rethink = function () {
+                    $scope.showIndexPage = true;
+                    $scope.showYesPage = false;
+                    $scope.showNoPage = false;
+                };
+
+                $scope.submit = function () {
+                    alert("Fuck you bitch, don't you dare talk to me now!!");
+                    console.log("Your fuckin excuse: ", $scope.yourFuckingExcuse);
+                };
+
+                $scope.showMarriagePopup = function () {
+                    var confirmMessage = confirm("We will end up married, don't worry... just worry what will you tell your kids when they ask how they came.");
+                    if (confirmMessage) {
+                        $scope.showIndexPage = true;
+                        $scope.showYesPage = false;
+                        $scope.showMarriagePage = false; // Hide marriage page if user goes back
+                        $scope.showPopup = true; // Show love poem popup
+                    }
+                };
+
+                $scope.closePopup = function () {
+                    $scope.showPopup = false; // Close the popup
+                    $location.path('/'); // Redirect to index page
+                };
+            });
+    </script>
+</body>
+
+</html>
